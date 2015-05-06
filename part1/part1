@@ -1,0 +1,524 @@
+#!/usr/bin/env pinpoint
+
+[font=Sans 50px]
+[duration=0]
+-- [text-align=center] [text-color=green]
+ECMA Script 6
+
+/Part 1/
+
+-- [duration=0] [img/revolution.png]
+
+-- [duration=0] [img/babel.png]
+
+-- [duration=0] [bottom] [img/axel.jpg]
+
+Dr. Axel Rauschmayer
+
+-- [duration=0]
+
+http://www.2ality.com/
+
+http://es6-features.org/
+
+https://babeljs.io/
+
+-- [duration=0]
+<span foreground="yellow">Block-scoped binding constructs</span>
+
+-- [duration=0]
+
+Both let and const create variables
+that are block-scoped – they only exist within 
+<span foreground="yellow">the innermost block that surrounds them.</span>
+
+function func() {
+  if (true) {
+    let tmp = 123;
+  }
+  console.log(tmp); // ReferenceError: tmp is not defined
+}
+
+-- [duration=0]
+
+<span foreground="yellow">Block scoping means that you can
+shadow variables within a function:</span>
+
+function func() {
+  let foo = 5;
+  if (true) {
+    let foo = 10; // shadows outer `foo`
+    console.log(foo); // 10
+  }
+  console.log(foo); // 5
+}
+
+-- [duration=0]
+
+<span foreground="yellow">const creates immutable variables</span>
+
+const obj = {};
+obj.prop = 123;
+console.log(obj.prop); // 123
+
+obj = {}; // TypeError
+
+<span foreground="yellow">if you wanted obj to
+truly be a constant, you’d have to freeze its value:</span>
+
+const obj = Object.freeze({});
+obj.prop = 123; // TypeError
+
+-- [duration=0]
+
+<span foreground="yellow">ES6:</span>
+
+const PI = 3.141593
+
+<span foreground="yellow">ES5:</span>
+
+//  only in ES5 through the help of object properties
+//  and only in global context and not in a block scope
+Object.defineProperty(typeof global === "object" ? global : window, "PI", {
+    value:        3.141593,
+    enumerable:   true,
+    writeable:    false,
+    configurable: false
+})
+
+-- [duration=0]
+
+<span foreground="yellow">The temporal dead zone</span>
+
+<span foreground="yellow">A variable declared by let or const has a so-called
+temporal dead zone (TDZ): When entering its scope,
+it can’t be accessed (got or set) until execution
+reaches the declaration.</span>
+
+if (true) { // enter new scope, TDZ starts
+
+  // Uninitialized binding for 'tmp' is created
+  tmp = 'abc'; // ReferenceError
+  console.log(tmp); // ReferenceError
+
+  let tmp; // TDZ ends, 'tmp' is initialized with `undefined`
+  console.log(tmp); // undefined
+
+  tmp = 123;
+  console.log(tmp); // 123
+}
+
+-- [duration=0]
+
+<span foreground="yellow">In loops, you get a fresh binding
+for each iteration if you let-declare a variable.
+The loops that allow you to do so are: for, for-in and for-of.</span>
+
+let arr = [];
+for (var i = 0; i &lt; 3; i++) {
+  arr.push(function() {return i;});
+}
+
+console.log(arr.map(function(x){return x();}));
+
+<span foreground="grey">// [3,3,3]</span>
+
+let arr = [];
+for (let i = 0; i &lt; 3; i++) {
+  arr.push(function() {return i;});
+}
+
+console.log(arr.map(function(x){return x();}));
+
+<span foreground="grey">// [0,1,2]</span>
+
+-- [duration=0]
+
+<span foreground="yellow">Parameters</span>
+
+-- [duration=0]
+
+<span foreground="yellow">Parameters versus local variables</span>
+
+function func(arg) {
+  let arg; // static error: duplicate declaration of `arg`
+}
+
+<span foreground="yellow">Doing the same inside a
+block shadows the parameter:</span>
+
+
+function func(arg) {
+  {
+    let arg; // shadows parameter `arg`
+  }
+}
+
+-- [duration=0]
+
+<span foreground="yellow">Parameter default
+values don’t see the scope of the body</span>
+
+let foo = 'outer';
+function bar(func = x => foo) {
+  let foo = 'inner';
+  console.log(func()); // outer
+}
+bar();
+
+-- [duration=0]
+
+<span foreground="yellow">Arrows</span>
+
+-- [duration=0]
+
+<span foreground="yellow">Arrow Functions
+Expression Bodies
+More expressive closure syntax.</span>
+
+<span foreground="yellow">ES6:</span>
+
+let odds  = evens.map(v => v + 1);
+let pairs = evens.map(v => ({ even: v, odd: v + 1 }));
+let nums  = evens.map((v, i) => v + i);
+
+
+<span foreground="yellow">ES5:</span>
+
+var odds  = evens.map(function (v) { return v + 1; });
+var pairs = evens.map(function (v) { return { even: v, odd: v + 1 }; });
+var nums  = evens.map(function (v, i) { return v + i; });
+
+-- [duration=0]
+
+<span foreground="yellow">Arrow Functions
+Statement Bodies
+More expressive closure syntax.</span>
+
+<span foreground="yellow">ES6:</span>
+
+nums.forEach(v => {
+   if (v % 5 === 0)
+       fives.push(v);
+})
+
+<span foreground="yellow">ES5:</span>
+
+nums.forEach(function (v) {
+   if (v % 5 === 0)
+       fives.push(v);
+});
+
+-- [duration=0]
+
+<span foreground="yellow">Arrow Functions
+Lexical this
+More intuitive handling of current object context.</span>
+
+<span foreground="yellow">ES6:</span>
+
+this.nums.forEach((v) => {
+    if (v % 5 === 0)
+        this.fives.push(v);
+});
+
+<span foreground="yellow">ES5:</span>
+
+var self = this;
+this.nums.forEach(function (v) {
+    if (v % 5 === 0)
+        self.fives.push(v);
+});
+
+-- [duration=0]
+
+<span foreground="yellow">ES 5 example
+with timer</span>
+
+var o = {
+  name: 'my name',
+  go: function() {
+    setTimeout(function() {
+      console.log(this.name)
+    }, 100)
+  }
+}
+
+o.go();
+
+<span foreground="grey">// undefined</span>
+
+-- [duration=0]
+
+<span foreground="yellow">ES 6 example
+with timer</span>
+
+var o = {
+  name: 'my name',
+  go: function () {
+    setTimeout(() => {
+      console.log(this.name)
+    }, 100)
+  }
+}
+
+o.go();
+
+<span foreground="grey">// my name</span>
+
+-- [duration=0]
+
+<span foreground="yellow">Template Strings</span>
+
+
+// Basic literal string creation
+var s1 = `In ES5 \\n is a line-feed.`;
+console.log(s1);
+
+<span foreground="grey">In ES5 
+ is a line-feed.</span>
+
+// Multiline strings
+var s2 = `In ES5 this is
+ not legal.`;
+console.log(s2);
+
+<span foreground="grey">In ES5 this is;
+ not legal.</span>
+
+// Interpolate variable bindings
+var name = "Bob", time = "today";
+var s3 = `Hello ${name}, how are you ${time}?`;
+
+-- [duration=0]
+
+var s4 = `http://foo.org/bar?a=${a}&b=${b}
+    Content-Type: application/json
+    X-Credentials: ${credentials}
+    { "foo": ${foo},
+      "bar": ${bar}}`;
+
+-- [duration=0]
+
+<span foreground="yellow">Enhanced Object Literals</span>
+
+-- [duration=0]
+
+function handler() {
+  console.log('from handler');
+}
+
+let obj = {
+    // Shorthand for ‘handler: handler’
+    handler,
+    // Methods
+    toString() {
+     // Super calls
+     return "super call " + super.toString();
+    },
+    // Computed (dynamic) property names
+    [ "prop_" + (() => 42)() ]: 42
+};
+
+-- [duration=0]
+
+<span foreground="yellow">Calling of
+previous code:</span>
+
+setTimeout(function() {
+  console.log(obj.toString());
+  obj.handler();
+  console.log(obj.prop_42);
+}, 100);
+
+<span foreground="grey">
+super call proto string
+from handler
+42</span>
+
+-- [duration=0]
+
+<span foreground="yellow">Spread operator.
+Callee-evaluated default parameter values.</span>
+
+console.log(...[1,2,3]);
+
+<span foreground="yellow">//same as</span>
+
+console.log(1,2,3)
+
+-- [duration=0]
+
+function f(x, ...y) {
+  // y is an Array
+  return x * y.length;
+}
+f(3, "hello", true) == 6
+
+function f(x, y, z) {
+  return x + y + z;
+}
+// Pass each elem of array as argument
+f(...[1,2,3]) == 6
+
+-- [duration=0]
+
+let x = [1, 2];
+let y = [3, 4];
+x.push(...y);  // x is [1, 2, 3, 4]
+
+<span foreground="yellow">Failing to use spread operator:</span>
+
+function f(a,...b, c) {
+  console.log(a, b, c);
+}
+
+f(1,2,3,4);
+
+<span foreground="yellow">Parameter with spread operator
+should be LAST in parameter list
+of function!</span>
+
+
+-- [duration=0]
+
+<span foreground="yellow">Destructuring</span>
+
+-- [duration=0]
+let obj = { first: 'Jane', last: 'Doe' };
+let { first: f, last: l } = obj;
+<span foreground="grey">// f = 'Jane'; l = 'Doe'</span>
+
+// Variable declarations:
+let [x] = ['a'];
+const [x] = ['a'];
+var [x] = ['a'];
+
+// Assignments:
+[x] = ['a'];
+
+// Parameter definitions:
+function f([x]) {
+  console.log(x);
+}
+
+f(['a']);
+<span foreground="grey">// a</span>
+
+-- [duration=0]
+
+let [x, y] = ['a', 'b'];
+<span foreground="grey">// x = 'a'; y = 'b'</span>
+
+let { x: x } = { x: 7, y: 3 };
+<span foreground="grey">// x = 7</span>
+
+let [x,y] = ['a', 'b', 'c'];
+<span foreground="grey">// x='a'; y='b';</span>
+
+let [x] = [];
+<span foreground="grey">// x = undefined</span>
+let {prop:y} = {};
+<span foreground="grey">// y = undefined</span>
+
+let obj = { a: [{ foo: 123, bar: 'abc' }, {}], b: true };
+let { a: [{foo: f}] } = obj;
+<span foreground="grey">// f = 123</span>
+
+-- [duration=0]
+
+<span foreground="yellow">Object patterns coerce values to objects
+
+The object pattern coerces destructuring sources to objects
+before accessing properties.
+That means that it works with primitive values:</span>
+
+let {length : len} = 'abc';
+<span foreground="grey">// len = 3</span>
+let {toString: s} = 123;
+<span foreground="grey">// s = Number.prototype.toString</span>
+
+
+
+Number.prototype.myFun = function(x) {
+  return x*x;
+};
+
+let {myFun: square} = 0;
+console.log(square(7));
+
+<span foreground="grey">49</span>
+
+-- [duration=0]
+
+<span foreground="yellow">Failing to object-destructure a value</span>
+
+<span foreground="yellow">The coercion to object is not performed via Object(),
+but via the internal operation ToObject().
+Object() never fails:</span>
+
+> typeof Object('abc')
+'object'
+> var obj = {};
+> Object(obj) === obj
+true
+> Object(undefined)
+{}
+> Object(null)
+{}
+
+-- [duration=0]
+
+<span foreground="yellow">ToObject() throws a TypeError if it encounters undefined or null.
+Therefore, the following destructurings fail,
+even before destructuring accesses any properties:</span>
+
+let { prop: x } = undefined; // TypeError
+let { prop: y } = null; // TypeError
+
+<span foreground="yellow">As a consequence, you can use the empty object pattern {} to check
+whether a value is coercible to an object.
+As we have seen, only undefined and null aren’t:</span>
+
+({}) = [true, false]; // OK, arrays are coercible to objects
+({}) = 'abc'; // OK, strings are coercible to objects
+
+({}) = undefined; // TypeError
+({}) = null; // TypeError
+
+-- [duration=0]
+
+<span foreground="yellow">Array patterns work with iterables
+
+Strings are iterable:</span>
+
+let [x,...y] = 'abc'; // x='a'; y=['b', 'c']
+
+let [x,y] = new Set(['a', 'b']); // x='a'; y='b’;
+
+function* allNaturalNumbers() {
+  for (let n = 0; ; n++) {
+    yield n;
+  }
+}
+let [x, y, z] = allNaturalNumbers(); // x=0; y=1; z=2
+
+-- [duration=0]
+
+<span foreground="yellow">Failing to array-destructure a value</span>
+
+let x;
+[x] = [true, false]; // OK, arrays are iterable
+[x] = 'abc'; // OK, strings are iterable
+[x] = { * [Symbol.iterator]() { yield 1 } }; // OK, iterable
+
+[x] = {}; // TypeError, empty objects are not iterable
+[x] = undefined; // TypeError, not iterable
+[x] = null; // TypeError, not iterable
+
+[] = {}; // TypeError, empty objects are not iterable
+[] = undefined; // TypeError, not iterable
+[] = null; // TypeError, not iterable
+
+-- [black] [font=Sans 100px] [transition=spin-text]
+To be continued...
