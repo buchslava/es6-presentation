@@ -334,7 +334,7 @@ setTimeout(function() {
 }, 100);
 
 <span foreground="grey">
-super call proto string
+super call string
 from handler
 42</span>
 
@@ -455,20 +455,6 @@ console.log(square(7));
 
 <span foreground="yellow">Failing to object-destructure a value</span>
 
-<span foreground="yellow">The coercion to object is not performed via Object(),
-but via the internal operation ToObject().
-Object() never fails:</span>
-
-> typeof Object('abc')
-'object'
-> var obj = {};
-> Object(obj) === obj
-true
-> Object(undefined)
-{}
-> Object(null)
-{}
-
 -- [duration=0]
 
 <span foreground="yellow">ToObject() throws a TypeError if it encounters undefined or null.
@@ -481,9 +467,6 @@ let { prop: y } = null; // TypeError
 <span foreground="yellow">As a consequence, you can use the empty object pattern {} to check
 whether a value is coercible to an object.
 As we have seen, only undefined and null aren’t:</span>
-
-({}) = [true, false]; // OK, arrays are coercible to objects
-({}) = 'abc'; // OK, strings are coercible to objects
 
 ({}) = undefined; // TypeError
 ({}) = null; // TypeError
