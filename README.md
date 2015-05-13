@@ -1,7 +1,7 @@
 ES6 presentration
 =============
 
-Divided by parts, now Part1 available.
+Divided by parts, now Part1 and Part2 available.
 
 For presentation running install please Pinpoint:
 
