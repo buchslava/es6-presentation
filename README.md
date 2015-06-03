@@ -1,8 +1,7 @@
 ES6 presentration
 =============
 
-Divided by parts, now Part1 and Part2 available.
-
-For presentation running install please Pinpoint:
-
-* sudo apt-get install pinpoint
+Usage:
+1. npm -i
+2. gulp server --part X
+3. gulp url
