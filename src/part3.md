@@ -11,12 +11,67 @@ This part explains how they work.
 ???
 
 ---
+#Before... (ES5)
+
+##The Problem with Object Literals
+
+http://ryanmorr.com/true-hash-maps-in-javascript/
+
+```js
+var map = {};
+'toString' in map; // true
+
+var map = {};
+map.hasOwnProperty('toString'); // false
+
+var map = {};
+map.hasOwnProperty = 'foo';
+map.hasOwnProperty('hasOwnproperty'); // TypeError
+
+var map = {};
+var has = {}.hasOwnProperty;
+
+for(var key in map){
+    if(has.call(map, key)){
+        // do something
+    }
+}
+```
+
+---
+#Bare Objects
+```js
+var map = Object.create(null);
+
+map instanceof Object; // false
+Object.prototype.isPrototypeOf(map); // false
+Object.getPrototypeOf(map); // null
+map + ""; // TypeError: Cannot convert object to primitive value
+'toString' in map; // false
+
+Object.defineProperties(map, {
+    'foo': {
+        value: 1,
+        enumerable: true
+    },
+    'bar': {
+        value: 2,
+        enumerable: false
+    }
+});
+
+map.foo; // 1
+map['bar']; // 2
+
+JSON.stringify(map); // {"foo":1}
+```
+---
 
 ##Why serarate solutions?
 ![](images/dsO.png)
 
 ---
-#Basic operations
+#Map. Basic operations
 ##Working with single entries:
 
 ```js
@@ -188,6 +243,10 @@ let map1 = new Map(
   [...map0] // step 1
   .filter(([k, v]) => k < 3) // step 2
 ); // step 3
+
+// result of steps 1-2 is :
+// [ [ 1, 'a' ], [ 2, 'b' ] ]
+
 // Resulting map: {1 => 'a', 2 => 'b'}
 
 
@@ -205,6 +264,35 @@ A WeakMap is a map that doesn’t prevent its keys from being garbage-collected.
 
 A WeakMap is a data structure whose keys must be objects and whose values can be arbitrary values. It has the same API as Map, with one significant difference: you can’t iterate over the contents – neither the keys, nor the values, nor the entries. You can’t clear a WeakMap, either.
 
+---
+The Antipattern
+
+```js
+let o1 = {k: 1};
+let o2 = {k: 2};
+let o3 = {k: 3};
+
+let m = new Map()
+  .set(o1, 'a')
+  .set(o2, 'b')
+  .set(o3, 'c');
+
+console.log(o2, m.get(o2), m.size);
+o2 = null;
+console.log(o2, m.get(o2), m.size);
+
+map.forEach((value, key) => {
+  console.log(key, value);
+});
+
+// { k: 2 } 'b' 3
+// null undefined 3
+// { k: 1 } 'a'
+// { k: 2 } 'b'
+// { k: 3 } 'c'
+
+
+```
 ---
 #Simple example:
 
@@ -225,6 +313,17 @@ console.log(m.get(o.k1), m.get(o.k2));
 
 //a b
 //undefined 'b'
+```
+
+---
+
+WeakMaps have only four methods, all of them work the same as the Map methods.
+
+```js
+WeakMap.prototype.get(key) : any
+WeakMap.prototype.set(key, value) : this
+WeakMap.prototype.has(key) : boolean
+WeakMap.prototype.delete(key) : boolean
 ```
 
 ---
@@ -349,4 +448,27 @@ console.log(s.has({}), s.has(o));
 //false
 //false true
 //false false
+```
+---
+#WeakMap implementation
+##Private properties
+
+http://fitzgeraldnick.com/weblog/53/
+
+```js
+const privates = new WeakMap();
+
+function Public() {
+  const me = {
+    // Private data goes here
+  };
+  privates.set(this, me);
+}
+
+Public.prototype.method = function () {
+  const me = privates.get(this);
+  // Do stuff with private data in `me`...
+};
+
+module.exports = Public;
 ```
