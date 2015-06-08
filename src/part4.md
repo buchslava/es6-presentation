@@ -1,6 +1,153 @@
 name: inverse
 layout: true
 class: left, middle, inverse
+
+---
+#Symbols
+
+##A new primitive type
+
+ECMAScript 6 introduces a new primitive type: symbols. They are tokens that serve as unique IDs. You create symbols via the factory function Symbol() (which is loosely similar to String returning strings if called as a function):
+
+```js
+let symbol1 = Symbol();
+```
+Symbol() has an optional string-valued parameter that lets you give the newly created symbol a description:
+```js
+let symbol2 = Symbol('symbol2');
+let symbol3 = Symbol('symbol3');
+console.log(String(symbol2), String(symbol3));
+// Symbol(symbol2)_r.si7cnpa7o315rk9 Symbol(symbol3)_s.5wz1ju7p34841jor
+```
+
+---
+Every symbol returned by Symbol() is unique, every symbol has its own identity:
+
+```js
+symbol1 === symbol2; // false
+```
+
+You can see that symbols are primitive if you apply the typeof operator to one of them – it will return a new symbol-specific result:
+```js
+typeof symbol1; // 'symbol'
+```
+---
+#Symbols as property keys
+
+```js
+const MY_KEY = Symbol();
+let obj = {};
+
+obj[MY_KEY] = 123;
+console.log(obj[MY_KEY]); // 123
+
+////
+
+const MY_KEY = Symbol();
+let obj = {
+  [MY_KEY]: 123
+};
+```
+---
+##A method definition can also have a computed key:
+
+```js
+const FOO = Symbol();
+let obj = {
+  [FOO]() {
+    return 'bar';
+  }
+};
+console.log(obj[FOO]()); // bar
+```
+---
+#Enumerating own property keys
+
+Given that there is now a new kind of value that can become the key of a property, the following terminology is used for ECMAScript 6:
+
+##Property keys are either strings or symbols.
+##Property names are strings.
+
+```js
+let obj = {
+  [Symbol('my_key')]: 1,
+  enum: 2,
+  nonEnum: 3
+};
+Object.defineProperty(obj, 'nonEnum', { enumerable: false });
+
+// Object.getOwnPropertyNames() ignores symbol-valued property keys:
+Object.getOwnPropertyNames(obj); // ['enum', 'nonEnum']
+
+//Object.getOwnPropertySymbols() ignores string-valued property keys:
+Object.getOwnPropertySymbols(obj); // [Symbol(my_key)]
+
+//Reflect.ownKeys() considers all kinds of keys:
+Reflect.ownKeys(obj); // [Symbol(my_key), 'enum', 'nonEnum']
+
+//The name of Object.keys() doesn’t really work,
+//anymore: it only considers enumerable property keys that are strings.
+Object.keys(obj); // ['enum']
+```
+---
+#Using symbols to represent concepts
+###Old style:
+```js
+var COLOR_RED    = 'RED';
+var COLOR_ORANGE = 'ORANGE';
+var COLOR_YELLOW = 'YELLOW';
+var COLOR_GREEN  = 'GREEN';
+var COLOR_BLUE   = 'BLUE';
+var COLOR_VIOLET = 'VIOLET';
+```
+###New style
+```js
+const COLOR_RED    = Symbol();
+const COLOR_ORANGE = Symbol();
+const COLOR_YELLOW = Symbol();
+const COLOR_GREEN  = Symbol();
+const COLOR_BLUE   = Symbol();
+const COLOR_VIOLET = Symbol();
+```
+---
+
+#Safety checks
+
+```js
+new Symbol(); //   TypeError: Symbol is not a constructor
+```
+
+There is still a way to create wrapper objects, instances of Symbol: Object, called as a function, converts all values to objects, including symbols.
+
+```js
+let sym = Symbol();
+typeof sym; // 'symbol'
+
+let wrapper = Object(sym);
+typeof wrapper; // 'object'
+wrapper instanceof Symbol; // true
+```
+---
+#Global symbol registry
+
+If you want a symbol to be the same in all realms, you need to create it via the global symbol registry. The following method lets you do that:
+
+Symbol.for(str) → symbol
+Returns the symbol whose key is the string str in the registry. If str isn’t in the registry yet, a new symbol is created and filed in the registry under the key str.
+Another method lets you make the reverse look up and found out under which key a string is stored in the registry. This is may be useful for serializing symbols.
+
+Symbol.keyFor(sym) → string
+returns the string that is associated with the symbol sym in the registry. If sym isn’t in the registry, this method returns undefined.
+
+```js
+let sym1 = Symbol.for('Hello everybody!');
+let sym2 = Symbol.for('Hello everybody!');
+console.log(sym1 === sym2);
+console.log(Symbol.keyFor(sym1), typeof Symbol.keyFor(sym1));
+// true
+// Hello everybody! string
+```
+
 ---
 #Iterables and iterators
 
@@ -55,12 +202,13 @@ for (let x of ['a', 'b']) {
 ##Strings
 
 ```js
-for (let x of 'a\uD83D\uDC0A') {
-        console.log(x);
-    }
-    // Output:
-    // 'a'
-    // '\uD83D\uDC0A' (crocodile emoji)
+for (let x of 'abc') {
+  console.log(x);
+}
+// Output:
+// 'a'
+// 'b'
+// 'c'
 ```
 
 ---
@@ -463,8 +611,11 @@ For example, by breaking from a for-of loop:
 
 ```js
 for (let x of naturalNumbers()) {
-  if (x > 2) break;
-    console.log(x);
+  if (x > 2) {
+    break;
+  }
+
+  console.log(x);
 }
 ```
 
