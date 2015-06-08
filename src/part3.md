@@ -281,7 +281,7 @@ console.log(o2, m.get(o2), m.size);
 o2 = null;
 console.log(o2, m.get(o2), m.size);
 
-map.forEach((value, key) => {
+m.forEach((value, key) => {
   console.log(key, value);
 });
 
