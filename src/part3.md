@@ -472,3 +472,5 @@ Public.prototype.method = function () {
 
 module.exports = Public;
 ```
+---
+# To be continued...
