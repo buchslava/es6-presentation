@@ -1,51 +1,53 @@
-#!/usr/bin/env pinpoint
+name: inverse
+layout: true
+class: left, middle, inverse
 
-[font=Sans 50px]
-[duration=0]
--- [text-align=center] [text-color=green]
-ECMA Script 6
+---
+#ECMA Script 6
 
-/Part 1/
+---
+![](images/revolution.png)
 
--- [duration=0] [img/revolution.png]
+---
+![](images/babel.png)
 
--- [duration=0] [img/babel.png]
-
--- [duration=0] [bottom] [img/axel.jpg]
-
+---
+![](images/axel.jpg)
 Dr. Axel Rauschmayer
+---
 
--- [duration=0]
+##http://www.2ality.com/
 
-http://www.2ality.com/
+##http://es6-features.org/
 
-http://es6-features.org/
+##https://babeljs.io/
 
-https://babeljs.io/
+##https://github.com/buchslava/es6-presentation
 
-https://github.com/buchslava/es6-presentation
+---
+#Block-scoped binding constructs
 
--- [duration=0]
-<span foreground="yellow">Block-scoped binding constructs</span>
-
--- [duration=0]
+---
 
 Both let and const create variables
-that are block-scoped – they only exist within 
-<span foreground="yellow">the innermost block that surrounds them.</span>
+that are block-scoped – they only exist within
+the innermost block that surrounds them.
 
+```js
 function func() {
   if (true) {
     let tmp = 123;
   }
   console.log(tmp); // ReferenceError: tmp is not defined
 }
+```
 
--- [duration=0]
+---
 
-<span foreground="yellow">Block scoping means that you can
-shadow variables within a function:</span>
+##Block scoping means that you can
+##shadow variables within a function:
 
+```js
 function func() {
   let foo = 5;
   if (true) {
@@ -54,31 +56,37 @@ function func() {
   }
   console.log(foo); // 5
 }
+```
 
--- [duration=0]
+---
 
-<span foreground="yellow">const creates immutable variables</span>
-
+##const creates immutable variables
+```js
 const obj = {};
 obj.prop = 123;
 console.log(obj.prop); // 123
 
 obj = {}; // TypeError
+```
+if you wanted obj to
+truly be a constant, you’d have to freeze its value:
 
-<span foreground="yellow">if you wanted obj to
-truly be a constant, you’d have to freeze its value:</span>
-
+```js
 const obj = Object.freeze({});
 obj.prop = 123; // TypeError
+```
 
--- [duration=0]
+---
 
-<span foreground="yellow">ES6:</span>
+##ES6:
 
+```js
 const PI = 3.141593
+```
 
-<span foreground="yellow">ES5:</span>
+##ES5:
 
+```js
 //  only in ES5 through the help of object properties
 //  and only in global context and not in a block scope
 Object.defineProperty(typeof global === "object" ? global : window, "PI", {
@@ -87,16 +95,18 @@ Object.defineProperty(typeof global === "object" ? global : window, "PI", {
     writeable:    false,
     configurable: false
 })
+```
 
--- [duration=0]
+---
 
-<span foreground="yellow">The temporal dead zone</span>
+#The temporal dead zone
 
-<span foreground="yellow">A variable declared by let or const has a so-called
-temporal dead zone (TDZ): When entering its scope,
-it can’t be accessed (got or set) until execution
-reaches the declaration.</span>
+##A variable declared by let or const has a so-called
+##temporal dead zone (TDZ): When entering its scope,
+##it can’t be accessed (got or set) until execution
+##reaches the declaration.
 
+```js
 if (true) { // enter new scope, TDZ starts
 
   // Uninitialized binding for 'tmp' is created
@@ -109,13 +119,15 @@ if (true) { // enter new scope, TDZ starts
   tmp = 123;
   console.log(tmp); // 123
 }
+```
 
--- [duration=0]
+---
 
-<span foreground="yellow">In loops, you get a fresh binding
-for each iteration if you let-declare a variable.
-The loops that allow you to do so are: for, for-in and for-of.</span>
+##In loops, you get a fresh binding
+##for each iteration if you let-declare a variable.
+##The loops that allow you to do so are: for, for-in and for-of.
 
+```js
 let arr = [];
 for (var i = 0; i &lt; 3; i++) {
   arr.push(function() {return i;});
@@ -123,7 +135,7 @@ for (var i = 0; i &lt; 3; i++) {
 
 console.log(arr.map(function(x){return x();}));
 
-<span foreground="grey">// [3,3,3]</span>
+// [3,3,3]
 
 let arr = [];
 for (let i = 0; i &lt; 3; i++) {
@@ -132,111 +144,113 @@ for (let i = 0; i &lt; 3; i++) {
 
 console.log(arr.map(function(x){return x();}));
 
-<span foreground="grey">// [0,1,2]</span>
+// [0,1,2]
+```
 
--- [duration=0]
+---
 
-<span foreground="yellow">Parameters</span>
+#Parameters
 
--- [duration=0]
+##Parameters versus local variables
 
-<span foreground="yellow">Parameters versus local variables</span>
-
+```js
 function func(arg) {
   let arg; // static error: duplicate declaration of `arg`
 }
+```
 
-<span foreground="yellow">Doing the same inside a
-block shadows the parameter:</span>
+##Doing the same inside a block shadows the parameter:
 
-
+```js
 function func(arg) {
   {
     let arg; // shadows parameter `arg`
   }
 }
+```
 
--- [duration=0]
+---
+##Parameter default
+##values don’t see the scope of the body
 
-<span foreground="yellow">Parameter default
-values don’t see the scope of the body</span>
-
+```js
 let foo = 'outer';
 function bar(func = x => foo) {
   let foo = 'inner';
   console.log(func()); // outer
 }
 bar();
+```
 
--- [duration=0]
+---
 
-<span foreground="yellow">Arrows</span>
+#Arrows
 
--- [duration=0]
+---
+##Arrow Functions
+##Expression Bodies
+##More expressive closure syntax.
 
-<span foreground="yellow">Arrow Functions
-Expression Bodies
-More expressive closure syntax.</span>
+##ES6:
 
-<span foreground="yellow">ES6:</span>
-
+```js
 let odds  = evens.map(v => v + 1);
 let pairs = evens.map(v => ({ even: v, odd: v + 1 }));
 let nums  = evens.map((v, i) => v + i);
+```
 
+##ES5:
 
-<span foreground="yellow">ES5:</span>
-
+```js
 var odds  = evens.map(function (v) { return v + 1; });
 var pairs = evens.map(function (v) { return { even: v, odd: v + 1 }; });
 var nums  = evens.map(function (v, i) { return v + i; });
+```
 
--- [duration=0]
-
-<span foreground="yellow">Arrow Functions
-Statement Bodies
-More expressive closure syntax.</span>
-
-<span foreground="yellow">ES6:</span>
-
+---
+##ES6:
+```js
 nums.forEach(v => {
    if (v % 5 === 0)
        fives.push(v);
 })
+```
 
-<span foreground="yellow">ES5:</span>
-
+##ES5:
+```js
 nums.forEach(function (v) {
    if (v % 5 === 0)
        fives.push(v);
 });
+```
 
--- [duration=0]
+---
 
-<span foreground="yellow">Arrow Functions
-Lexical this
-More intuitive handling of current object context.</span>
+#Arrow Functions
+##Lexical this
+##More intuitive handling of current object context.
 
-<span foreground="yellow">ES6:</span>
+##ES6:
 
+```js
 this.nums.forEach((v) => {
     if (v % 5 === 0)
         this.fives.push(v);
 });
-
-<span foreground="yellow">ES5:</span>
-
+```
+##ES5:
+```js
 var self = this;
 this.nums.forEach(function (v) {
     if (v % 5 === 0)
         self.fives.push(v);
 });
+```
 
--- [duration=0]
+---
 
-<span foreground="yellow">ES 5 example
-with timer</span>
-
+##ES 5 example with timer
+```js
 var o = {
   name: 'my name',
   go: function() {
@@ -247,14 +261,13 @@ var o = {
 }
 
 o.go();
+// undefined
+```
 
-<span foreground="grey">// undefined</span>
+---
 
--- [duration=0]
-
-<span foreground="yellow">ES 6 example
-with timer</span>
-
+##ES 6 example with timer
+```js
 var o = {
   name: 'my name',
   go: function () {
@@ -266,46 +279,46 @@ var o = {
 
 o.go();
 
-<span foreground="grey">// my name</span>
+// my name</span>
+```
 
--- [duration=0]
-
-<span foreground="yellow">Template Strings</span>
-
-
+---
+#Template Strings
+```js
 // Basic literal string creation
 var s1 = `In ES5 \\n is a line-feed.`;
 console.log(s1);
-
-<span foreground="grey">In ES5 
- is a line-feed.</span>
+//In ES5
+// is a line-feed.
 
 // Multiline strings
 var s2 = `In ES5 this is
  not legal.`;
 console.log(s2);
 
-<span foreground="grey">In ES5 this is;
- not legal.</span>
+//In ES5 this is;
+// not legal.
 
 // Interpolate variable bindings
 var name = "Bob", time = "today";
 var s3 = `Hello ${name}, how are you ${time}?`;
+```
 
--- [duration=0]
-
+---
+```js
 var s4 = `http://foo.org/bar?a=${a}&b=${b}
     Content-Type: application/json
     X-Credentials: ${credentials}
     { "foo": ${foo},
       "bar": ${bar}}`;
+```
 
--- [duration=0]
+---
 
-<span foreground="yellow">Enhanced Object Literals</span>
+#Enhanced Object Literals
 
--- [duration=0]
-
+---
+```js
 function handler() {
   console.log('from handler');
 }
@@ -321,36 +334,36 @@ let obj = {
     // Computed (dynamic) property names
     [ "prop_" + (() => 42)() ]: 42
 };
+```
 
--- [duration=0]
+---
 
-<span foreground="yellow">Calling of
-previous code:</span>
-
+##Calling of previous code:
+```js
 setTimeout(function() {
   console.log(obj.toString());
   obj.handler();
   console.log(obj.prop_42);
 }, 100);
 
-<span foreground="grey">
-super call string
-from handler
-42</span>
+// super call string
+// from handler
+// 42
+```
+---
 
--- [duration=0]
-
-<span foreground="yellow">Spread operator.
-Callee-evaluated default parameter values.</span>
-
+#Spread operator.
+##Callee-evaluated default parameter values.
+```js
 console.log(...[1,2,3]);
 
-<span foreground="yellow">//same as</span>
+//same as</span>
 
 console.log(1,2,3)
+```
 
--- [duration=0]
-
+---
+```js
 function f(x, ...y) {
   // y is an Array
   return x * y.length;
@@ -362,34 +375,36 @@ function f(x, y, z) {
 }
 // Pass each elem of array as argument
 f(...[1,2,3]) == 6
+```
 
--- [duration=0]
-
+---
+```js
 let x = [1, 2];
 let y = [3, 4];
 x.push(...y);  // x is [1, 2, 3, 4]
+```
 
-<span foreground="yellow">Failing to use spread operator:</span>
-
+##Failing to use spread operator:
+```js
 function f(a,...b, c) {
   console.log(a, b, c);
 }
 
 f(1,2,3,4);
+```
+##Parameter with spread operator
+##should be LAST in parameter list
+##of function!
 
-<span foreground="yellow">Parameter with spread operator
-should be LAST in parameter list
-of function!</span>
+---
 
+#Destructuring
 
--- [duration=0]
-
-<span foreground="yellow">Destructuring</span>
-
--- [duration=0]
+---
+```js
 let obj = { first: 'Jane', last: 'Doe' };
 let { first: f, last: l } = obj;
-<span foreground="grey">// f = 'Jane'; l = 'Doe'</span>
+// f = 'Jane'; l = 'Doe'</span>
 
 // Variable declarations:
 let [x] = ['a'];
@@ -405,42 +420,42 @@ function f([x]) {
 }
 
 f(['a']);
-<span foreground="grey">// a</span>
+// a
+```
 
--- [duration=0]
-
+---
+```js
 let [x, y] = ['a', 'b'];
-<span foreground="grey">// x = 'a'; y = 'b'</span>
+// x = 'a'; y = 'b'
 
 let { x: x } = { x: 7, y: 3 };
-<span foreground="grey">// x = 7</span>
+// x = 7
 
 let [x,y] = ['a', 'b', 'c'];
-<span foreground="grey">// x='a'; y='b';</span>
+// x='a'; y='b';
 
 let [x] = [];
-<span foreground="grey">// x = undefined</span>
+// x = undefined
 let {prop:y} = {};
-<span foreground="grey">// y = undefined</span>
+// y = undefined
 
 let obj = { a: [{ foo: 123, bar: 'abc' }, {}], b: true };
 let { a: [{foo: f}] } = obj;
-<span foreground="grey">// f = 123</span>
+// f = 123
+```
 
--- [duration=0]
-
-<span foreground="yellow">Object patterns coerce values to objects
+---
+##Object patterns coerce values to objects
 
 The object pattern coerces destructuring sources to objects
 before accessing properties.
-That means that it works with primitive values:</span>
+That means that it works with primitive values:
 
+```js
 let {length : len} = 'abc';
-<span foreground="grey">// len = 3</span>
+// len = 3
 let {toString: s} = 123;
-<span foreground="grey">// s = Number.prototype.toString</span>
-
-
+// s = Number.prototype.toString
 
 Number.prototype.myFun = function(x) {
   return x*x;
@@ -449,34 +464,35 @@ Number.prototype.myFun = function(x) {
 let {myFun: square} = 0;
 console.log(square(7));
 
-<span foreground="grey">49</span>
+// 49
+```
 
--- [duration=0]
+---
+##Failing to object-destructure a value
 
-<span foreground="yellow">Failing to object-destructure a value</span>
+---
 
--- [duration=0]
-
-<span foreground="yellow">ToObject() throws a TypeError if it encounters undefined or null.
+ToObject() throws a TypeError if it encounters undefined or null.
 Therefore, the following destructurings fail,
-even before destructuring accesses any properties:</span>
-
+even before destructuring accesses any properties:
+```js
 let { prop: x } = undefined; // TypeError
 let { prop: y } = null; // TypeError
+```
 
-<span foreground="yellow">As a consequence, you can use the empty object pattern {} to check
+As a consequence, you can use the empty object pattern {} to check
 whether a value is coercible to an object.
-As we have seen, only undefined and null aren’t:</span>
+As we have seen, only undefined and null aren’t:
 
+```js
 ({}) = undefined; // TypeError
 ({}) = null; // TypeError
+```
 
--- [duration=0]
-
-<span foreground="yellow">Array patterns work with iterables
-
-Strings are iterable:</span>
-
+---
+#Array patterns work with iterables
+##Strings are iterable:
+```js
 let [x,...y] = 'abc'; // x='a'; y=['b', 'c']
 
 let [x,y] = new Set(['a', 'b']); // x='a'; y='b’;
@@ -487,11 +503,12 @@ function* allNaturalNumbers() {
   }
 }
 let [x, y, z] = allNaturalNumbers(); // x=0; y=1; z=2
+```
 
--- [duration=0]
+---
+##Failing to array-destructure a value
 
-<span foreground="yellow">Failing to array-destructure a value</span>
-
+```js
 let x;
 [x] = [true, false]; // OK, arrays are iterable
 [x] = 'abc'; // OK, strings are iterable
@@ -504,6 +521,6 @@ let x;
 [] = {}; // TypeError, empty objects are not iterable
 [] = undefined; // TypeError, not iterable
 [] = null; // TypeError, not iterable
-
--- [black] [font=Sans 100px] [transition=spin-text]
-To be continued...
+```
+---
+# To be continued...

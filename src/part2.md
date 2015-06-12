@@ -1,29 +1,18 @@
-#!/usr/bin/env pinpoint
+name: inverse
+layout: true
+class: left, middle, inverse
 
-[font=Sans 50px]
-[duration=0]
--- [text-align=center] [text-color=green]
-ECMA Script 6
+---
+#ECMA Script 6
 
-/Part 2/
-Classes
+#Classes
 
--- [duration=0][/img/OOP-in-JS.png]
+---
+![](images/OOP-in-JS.png)
+---
 
-
--- [duration=0]
-
-http://www.2ality.com/
-
-http://es6-features.org/
-
-https://babeljs.io/
-
-https://github.com/buchslava/es6-presentation
-
--- [duration=0]
-<span foreground="yellow">Very simple example</span>
-
+##Very simple example
+```js
 class Foo {
   bar(x) {
    this.x = x;
@@ -34,12 +23,12 @@ let f = new Foo();
 Foo.prototype.a = 1;
 console.log(f.a, Foo.prototype.bar);
 
-<span foreground="grey">//1 [Function: bar]</span>
+//1 [Function: bar]
+```
 
--- [duration=0]
-
-<span foreground="yellow">ES6:</span>
-
+---
+##ES6:
+```js
 class Shape {
     constructor (id, x, y) {
         this.id = id;
@@ -50,9 +39,9 @@ class Shape {
         this.y = y;
     }
 }
-
-<span foreground="yellow">ES5:</span>
-
+```
+##ES5:
+```js
 var Shape = function (id, x, y) {
     this.id = id;
     this.move(x, y);
@@ -61,9 +50,9 @@ Shape.prototype.move = function (x, y) {
     this.x = x;
     this.y = y;
 };
-
--- [duration=0]
-
+```
+---
+```js
 class Point {
   constructor(x, y) {
     this.x = x;
@@ -89,11 +78,11 @@ cp.toString();// '(25, 8) in green'
 
 console.log(cp instanceof ColorPoint); // true
 console.log(cp instanceof Point); // true
+```
 
-
--- [duration=0]
-<span foreground="yellow">ES6:</span>
-
+---
+##ES6:
+```js
 class Rectangle extends Shape {
   constructor (id, x, y, width, height) {
     super(id, x, y);
@@ -101,9 +90,9 @@ class Rectangle extends Shape {
     this.height = height;
   }
 }
-
-<span foreground="yellow">ES5:</span>
-
+```
+##ES5:
+```js
 function Rectangle(id, x, y, width, height) {
   Shape.call(this, id, x, y);
   this.width  = width;
@@ -111,10 +100,10 @@ function Rectangle(id, x, y, width, height) {
 };
 Rectangle.prototype = Object.create(Shape.prototype);
 Rectangle.prototype.constructor = Rectangle;
+```
 
-
--- [duration=0]
-
+---
+```js
 class Point {
   constructor(x, y) {
     this.x = x;
@@ -127,62 +116,68 @@ class Point {
 
 var p = new Point(25, 8);
 p.toString();
-<span foreground="grey">//'(25, 8)'</span>
+//'(25, 8)'</span>
+```
 
-<span foreground="yellow">In fact, the result of a class definition is a function:</span>
+In fact, the result of a class definition is a function:
 
-typeof Point
-<span foreground="grey">//'function'</span>
+```js
+typeof Point;
+//'function'
+```
 
-<span foreground="yellow">However, you can only invoke a class via new,
-not via a function call (Sect. 9.2.2 in the spec):</span>
+However, you can only invoke a class via new,
+not via a function call (Sect. 9.2.2 in the spec):
 
-Point()
-<span foreground="grey">//TypeError: Classes can’t be function-called</span>
+```js
+Point();
+//TypeError: Classes can’t be function-called<
+```
 
--- [duration=0]
-
-<span foreground="yellow">Class declarations are not hoisted
+---
+#Class declarations are not hoisted
 
 Function declarations are hoisted: When entering a scope,
-the functions that are declared in it are immediately 
-available – independently of where the declarations happen. 
+the functions that are declared in it are immediately
+available – independently of where the declarations happen.
 That means that you can call a function that is declared later:</span>
 
+```js
 foo(); // works, because `foo` is hoisted
-    
+
 function foo() {}
+```
 
--- [duration=0]
-
-<span foreground="yellow">In contrast, class declarations are not hoisted.
+---
+##In contrast, class declarations are not hoisted.
 Therefore, a class only exists after execution reached its definition
-and it was evaluated. Accessing it beforehand leads to a ReferenceError:</span>
+and it was evaluated. Accessing it beforehand leads to a ReferenceError:
 
-
+```js
 new Foo(); // ReferenceError
-    
+
 class Foo {}
 
 
 function functionThatUsesBar() {
   new Bar();
 }
-    
+
 functionThatUsesBar(); // ReferenceError
 class Bar {}
 functionThatUsesBar(); // OK
+```
 
--- [duration=0]
-
-<span foreground="yellow">Class expressions
+---
+#Class expressions
 
 Similarly to functions, there are two kinds of class definitions,
 two ways to define a class: class declarations and class expressions.
 
 Also similarly to functions, the identifier of a class expression
-is only visible within the expression:</span>
+is only visible within the expression:
 
+```js
 const MyClass = class Me {
   getClassName() {
     return Me.name;
@@ -191,19 +186,20 @@ const MyClass = class Me {
 let inst = new MyClass();
 console.log(inst.getClassName()); // Me
 console.log(Me.name); // ReferenceError: Me is not defined
+```
 
--- [duration=0]
-
-<span foreground="yellow">Inside the body of a class definition
+---
+Inside the body of a class definition
 A class body can only contain methods, but not data properties.
-Prototypes having data properties is generally considered 
+Prototypes having data properties is generally considered
 an anti-pattern, so this just enforces a best practice.
 
 constructor, static methods, prototype methods
 
 Let’s examine three kinds of methods that you often
-find in class literals.</span>
+find in class literals.
 
+```js
 class Foo {
   constructor(prop) {
     this.prop = prop;
@@ -216,70 +212,73 @@ class Foo {
   }
 }
 let foo = new Foo(123);
+```
 
--- [duration=0]
+---
+First, the pseudo-method constructor. This method is special,
+as it defines the function that represents the class:
 
-<span foreground="yellow">First, the pseudo-method constructor. This method is special, 
-as it defines the function that represents the class:</span>
+```js
+Foo === Foo.prototype.constructor;
+//true
 
-Foo === Foo.prototype.constructor
-<span foreground="grey">//true</span>
+typeof Foo;
+//'function'
+```
 
-typeof Foo
-<span foreground="grey">//'function'</span>
-
--- [duration=0]
-
-<span foreground="yellow">Second, static methods. Static properties (or class properties)
+Second, static methods. Static properties (or class properties)
 are properties of Foo itself. If you prefix a method definition with static,
-you create a class method:</span>
+you create a class method:
 
-typeof Foo.staticMethod
-<span foreground="grey">//'function'</span>
-Foo.staticMethod()
-<span foreground="grey">//'classy'</span>
+```js
+typeof Foo.staticMethod;
+//'function'
+Foo.staticMethod();
+//'classy'
+```
 
--- [duration=0]
+Third, prototype methods. The prototype properties of Foo
+are the properties of Foo.prototype.
+They are usually methods and inherited
+by instances of Foo.
 
-<span foreground="yellow">Third, prototype methods. The prototype properties of Foo
-are the properties of Foo.prototype. They are usually methods and inherited
-by instances of Foo.</span>
-
-typeof Foo.prototype.prototypeMethod
-<span foreground="grey">//'function'</span>
+```js
+typeof Foo.prototype.prototypeMethod;
+//'function'
 
 foo.prototypeMethod()
-<span foreground="grey">//'prototypical'</span>
+//'prototypical'
+```
 
--- [duration=0]
+---
+#Static method explanation:
 
-<span foreground="yellow">Static method explanation:</span>
-
-<span foreground="yellow">ES6:</span>
-
+##ES6:
+```js
 class Rectangle extends Shape {
   …
   static defaultRectangle () {
     return new Rectangle("default", 0, 0, 100, 100)
   }
 }
-
-<span foreground="yellow">ES5:</span>
-
+```
+##ES5:
+```js
 function Rectangle(id, x, y, width, height) {
   …
 };
 Rectangle.defaultRectangle = function () {
   return new Rectangle("default", 0, 0, 100, 100);
 };
+```
 
--- [duration=0]
+---
+#Getters and setters
 
-<span foreground="yellow">Getters and setters
+##The syntax for getters and setters is just like in
+##ECMAScript 5 object literals:
 
-The syntax for getters and setters is just like in
-ECMAScript 5 object literals:</span>
-
+```js
 class MyClass {
   get prop() {
     return 'getter';
@@ -291,37 +290,38 @@ class MyClass {
 
 let inst = new MyClass();
 inst.prop = 123;
-<span foreground="grey">//setter: 123</span>
+//setter: 123
 inst.prop
-<span foreground="grey">//'getter'</span>
+//'getter'
+```
 
--- [duration=0]
+---
+#Computed method names
 
-<span foreground="yellow">Computed method names
-
-You can define the name of a method via an expression,
+##You can define the name of a method via an expression,
 if you put it in square brackets. For example, the following
 ways of defining Foo are all equivalent.</span>
-
+```js
 class Foo() {
   myMethod() {}
 }
-    
+
 class Foo() {
   ['my'+'Method']() {}
 }
-    
+
 const m = 'myMethod';
 class Foo() {
   [m]() {}
 }
+```
 
--- [duration=0]
-
-<span foreground="yellow">Subclassing
-The extends clause lets you create a subclass of an existing constructor
-(which may or may not have been defined via a class):</span>
-
+---
+#Subclassing
+##The extends clause lets you create a subclass
+##of an existing constructor
+##(which may or may not have been defined via a class):
+```js
 class Point {
   constructor(x, y) {
     this.x = x;
@@ -331,7 +331,7 @@ class Point {
     return '(' + this.x + ', ' + this.y + ')';
   }
 }
-    
+
 class ColorPoint extends Point {
   constructor(x, y, color) {
     super(x, y); // (A)
@@ -341,65 +341,67 @@ class ColorPoint extends Point {
     return super.toString() + ' in ' + this.color; // (B)
   }
 }
+```
 
--- [duration=0]
+---
+Again, this class is used like you’d expect:
 
-<span foreground="yellow">Again, this class is used like you’d expect:</span>
-
+```js
 let cp = new ColorPoint(25, 8, 'green');
-cp.toString()
-<span foreground="grey">//'(25, 8) in green'</span>
-    
-cp instanceof ColorPoint
-<span foreground="grey">//true</span>
-cp instanceof Point
-<span foreground="grey">//true</span>
+cp.toString();
+//'(25, 8) in green'
 
+cp instanceof ColorPoint;
+//true
+cp instanceof Point;
+//true
+```
 
--- [duration=0]
+---
+##The prototype of a subclass is the superclass
 
-<span foreground="yellow">The prototype of a subclass is the superclass</span>
+```js
+Object.getPrototypeOf(ColorPoint) === Point;
+//true
+```
 
-Object.getPrototypeOf(ColorPoint) === Point
-<span foreground="grey">//true</span>
-
--- [duration=0]
-
-<span foreground="yellow">That means that static properties are inherited:</span>
-
+---
+##That means that static properties are inherited:
+```js
 class Foo {
   static classMethod() {
     return 'hello';
   }
 }
-    
+
 class Bar extends Foo {
 }
 Bar.classMethod(); // 'hello'
+```
 
-<span foreground="yellow">You can even super-call static methods:</span>
+##You can even super-call static methods:
+```js
 class Foo {
   static classMethod() {
     return 'hello';
   }
 }
-    
+
 class Bar extends Foo {
   static classMethod() {
     return super.classMethod() + ', too';
   }
 }
 Bar.classMethod(); // 'hello, too'
+```
 
--- [duration=0]
+---
+#Super-constructor calls
 
-<span foreground="yellow">Super-constructor calls
-
-In a derived class, you must call super() before you can
-use this:</span>
-
+##In a derived class, you must call super() before you can use this:
+```js
 class Foo {}
-    
+
 class Bar extends Foo {
   constructor(num) {
     let tmp = num * 2; // OK
@@ -408,37 +410,41 @@ class Bar extends Foo {
     this.num = num; // OK
   }
 }
+```
 
--- [duration=0]
-
-<span foreground="yellow">Implicitly leaving a derived constructor
-without calling super() also causes an error:</span>
-
+---
+##Implicitly leaving a derived constructor
+##without calling super() also causes an error:
+```js
 class Foo {}
-    
+
 class Bar extends Foo {
   constructor() {
   }
 }
-    
+
 let bar = new Bar(); // ReferenceError
+```
 
--- [duration=0]
-
-
-<span foreground="yellow">Overriding the result of a constructor</span>
-
+---
+##Overriding the result of a constructor
+```js
 class Foo {
   constructor() {
     return Object.create(null);
   }
 }
 console.log(new Foo() instanceof Foo); // false
+```
 
--- [duration=0][/img/blocks_lego_oop.jpg]
-<span foreground="red">21+</span>
+---
+![](images/blocks_lego_oop.jpg)
+---
 
--- [duration=0]
+#21+
+
+---
+```js
 var aggregation = (baseClass, ...mixins) => {
     let base = class _Combined extends baseClass {
         constructor (...args) {
@@ -456,7 +462,7 @@ var aggregation = (baseClass, ...mixins) => {
                if (prop.match(p)) {
                  return;
                }
-               Object.defineProperty(target, prop, 
+               Object.defineProperty(target, prop,
                   Object.getOwnPropertyDescriptor(source, prop))
         })
     }
@@ -466,8 +472,10 @@ var aggregation = (baseClass, ...mixins) => {
     });
     return base;
 };
--- [duration=0]
+```
 
+---
+```js
 class Colored {
     initializer () { this._color = "white"; }
     get color ()   { return this._color; }
@@ -494,6 +502,6 @@ var rect = new Rectangle(7, 42);
 rect.z     = 1000;
 rect.color = "red";
 console.log(rect.x, rect.y, rect.z, rect.color);
-
--- [black] [font=Sans 100px] [transition=spin-text]
-To be continued...
+```
+---
+# To be continued...
