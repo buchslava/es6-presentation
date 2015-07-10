@@ -116,7 +116,7 @@ class Point {
 
 var p = new Point(25, 8);
 p.toString();
-//'(25, 8)'</span>
+//'(25, 8)'
 ```
 
 In fact, the result of a class definition is a function:
@@ -439,8 +439,35 @@ console.log(new Foo() instanceof Foo); // false
 
 ---
 ![](images/blocks_lego_oop.jpg)
+##Inheritance
+##Encapsulation
+##Polymorphism
 ---
+Private fields
+```js
+var PrivatePerson = (function(name) {
+  var _name = ""
 
+  return new class {
+    constructor() {
+      _name = name
+    }
+    getName() {
+      return _name
+    }
+    setName(name) {
+      _name = name
+    }
+  }()
+});
+
+var o = new PrivatePerson();
+o.setName('foo');
+console.log(o.getName(), o._name);
+
+// foo undefined
+```
+---
 #21+
 
 ---
